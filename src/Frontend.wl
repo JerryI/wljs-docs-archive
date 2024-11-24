@@ -2,6 +2,7 @@ BeginPackage["Notebook`DocsArchive`", {
     "JerryI`Notebook`AppExtensions`",
     "JerryI`Misc`Events`",
     "KirillBelov`Internal`",
+    "JerryI`WLX`WebUI`", 
     "KirillBelov`TCPServer`",
     "KirillBelov`HTTPHandler`",
     "KirillBelov`HTTPHandler`Extensions`"
@@ -26,9 +27,27 @@ dhttp["MessageHandler", "All"]  = AssocMatchQ[<|"Method" -> "GET"|>]  -> (
 AppExtensions`WebServers["Docs"] = <|"Host"->AppExtensions`FrontendEnv["host"], "Port"->20540, "Handler"->(dcp@#&)|>
 
 
+AppExtensions`TemplateInjection["AppScripts"] = ("
+    <script type=\"module\">
+        core['Notebook`DocsArchive`Internal`OpenDocs'] = (args, env) => {
+            const addr = interpretate(args[0], env);
+            if (window.electronAPI) {
+                window.electronAPI.openExternal(addr);
+            } else {
+                const lnk = document.createElement('a');
+                lnk.href = addr;
+                lnk.target = '_blank';
+                lnk.click();
+            }
+        }
+    </script>
+")&;
+
 EventHandler[AppExtensions`AppEvents// EventClone, {
     "open_docs" -> Function[Null,
-        UsingFrontEnd[SystemOpen["http://" <> AppExtensions`FrontendEnv["host"] <> ":20540"] ]
+        With[{cli = Global`$Client},
+            WebUISubmit[OpenDocs["http://" <> AppExtensions`FrontendEnv["host"] <> ":20540"], cli];
+        ]
     ]
 }];
 
