@@ -1,5 +1,4 @@
-BeginPackage["Notebook`DocsArchive`", {
-    "JerryI`Notebook`AppExtensions`",
+BeginPackage["CoffeeLiqueur`Extensions`DocsArchive`", {
     "JerryI`Misc`Events`",
     "KirillBelov`Internal`",
     "JerryI`WLX`WebUI`", 
@@ -7,6 +6,8 @@ BeginPackage["Notebook`DocsArchive`", {
     "KirillBelov`HTTPHandler`",
     "KirillBelov`HTTPHandler`Extensions`"
 }];
+
+Needs["CoffeeLiqueur`Notebook`AppExtensions`" -> "AppExtensions`"];
 
 Begin["`Internal`"]
 
@@ -29,7 +30,7 @@ AppExtensions`WebServers["Docs"] = <|"Host"->AppExtensions`FrontendEnv["host"], 
 
 AppExtensions`TemplateInjection["AppScripts"] = ("
     <script type=\"module\">
-        core['Notebook`DocsArchive`Internal`OpenDocs'] = (args, env) => {
+        core['CoffeeLiqueur`Extensions`DocsArchive`Internal`OpenDocs'] = (args, env) => {
             const addr = interpretate(args[0], env);
             if (window.electronAPI) {
                 window.electronAPI.openExternal(addr);
